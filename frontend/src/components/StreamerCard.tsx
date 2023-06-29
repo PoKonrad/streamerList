@@ -9,6 +9,9 @@ import {
   styled,
 } from "@mui/material";
 import { green, grey, red } from "@mui/material/colors";
+import { Platform, Streamer } from "../types";
+import React from "react";
+import PlatformIcon from "./PlatformIcon";
 
 const CardContainer = styled(Card)({
   minWidth: "20rem",
@@ -47,15 +50,19 @@ const TitleContainer = styled("div")({
   justifyContent: "space-between",
 });
 
-const StreamerCard = () => {
+interface StreamerCardProps {
+  streamer: Streamer;
+}
+
+const StreamerCard: React.FC<StreamerCardProps> = ({ streamer }) => {
   return (
     <CardContainer>
       <CardHeader
         disableTypography={true}
         title={
           <TitleContainer>
-            <Typography variant="h5">Streamer Name</Typography>
-            <img src="icons/twitch.svg" height={30} />
+            <Typography variant="h5">{streamer.name}</Typography>
+            <PlatformIcon platform={streamer.platform as Platform} />
           </TitleContainer>
         }
       />
@@ -71,18 +78,22 @@ const StreamerCard = () => {
           </IconButton>
           <Typography
             variant="subtitle1"
-            color={0 < 0 ? red[400] : 0 > 0 ? green[400] : grey[400]}
+            color={
+              streamer.upvotesCount < 0
+                ? red[400]
+                : streamer.upvotesCount > 0
+                ? green[400]
+                : grey[400]
+            }
           >
-            1m
+            {streamer.upvotesCount}
           </Typography>
           <IconButton>
             <KeyboardArrowDown />
           </IconButton>
         </CardFooter>
       </CardContentContainer>
-      <CardContent>
-        <div>Miau miau miau</div>
-      </CardContent>
+      <CardContent>{streamer.description}</CardContent>
     </CardContainer>
   );
 };
