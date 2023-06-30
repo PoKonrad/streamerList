@@ -1,14 +1,23 @@
-import { Controller, Get, Post, Body, Param, Put } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Put,
+  ValidationPipe,
+  HttpCode,
+} from '@nestjs/common';
 import { StreamersService } from './streamers.service';
 import { CreateStreamerDto } from './dto/create-streamer.dto';
-import { UpdateStreamerDto } from './dto/update-streamer.dto';
+import { updateStreamerUpvoteDto } from './dto/update-steamer-upvote.dto';
 
 @Controller('streamers')
 export class StreamersController {
   constructor(private readonly streamersService: StreamersService) {}
 
   @Post()
-  create(@Body() createStreamerDto: CreateStreamerDto) {
+  create(@Body(new ValidationPipe()) createStreamerDto: CreateStreamerDto) {
     return this.streamersService.create(createStreamerDto);
   }
 
@@ -22,11 +31,13 @@ export class StreamersController {
     return this.streamersService.findOne(+id);
   }
 
+  @HttpCode(204)
   @Put(':id')
   update(
     @Param('id') id: string,
-    @Body() updateStreamerDto: UpdateStreamerDto,
+    @Body() updateStreamerUpvote: updateStreamerUpvoteDto,
   ) {
-    return this.streamersService.update(+id, updateStreamerDto);
+    console.log(updateStreamerUpvote);
+    return this.streamersService.updateUpvotes(id, updateStreamerUpvote);
   }
 }
