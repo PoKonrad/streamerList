@@ -1,11 +1,12 @@
 import { Box, Button, Fade, Typography, styled } from "@mui/material";
 import StreamerCard from "../components/StreamerCard";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import type { Streamer } from "../types";
 import { Add } from "@mui/icons-material";
 import NewStreamer from "../components/NewStreamer";
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import StreamerHeader from "../components/StreamerHeader";
+import { socket } from "../socket";
 
 const Bar = styled("div")({
   width: "100%",
@@ -32,16 +33,29 @@ export const ModalContext = createContext<ModalContextValue>({
 });
 
 const Index = () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { data, isLoading, isError, error } = useQuery(["streamers"], () =>
+  const queryClient = useQueryClient();
+  const { data, isLoading, isError } = useQuery(["streamers"], () =>
     fetch("/api/streamers").then((resp) => resp.json())
   );
-  console.log(data);
 
   const [modalOpen, setModalOpen] = useState(false);
 
+  useEffect(() => {
+    const onNewStreamerEvent = () => {
+      queryClient.invalidateQueries("streamers");
+    };
+    socket.on("newStreamer", onNewStreamerEvent);
+    return () => {
+      socket.off("newStreamer", onNewStreamerEvent);
+    };
+  }, []);
+
   if (isLoading) {
     return null;
+  }
+
+  if (isError) {
+    <Typography>An error has occured</Typography>;
   }
 
   return (
@@ -62,9 +76,11 @@ const Index = () => {
           </Button>
         </Bar>
         <CardsContainer>
-          {data.map((streamer: Streamer) => (
-            <StreamerCard streamer={streamer} key={streamer.id} />
-          ))}
+          {data
+            ? data.map((streamer: Streamer) => (
+                <StreamerCard streamer={streamer} key={streamer.id} />
+              ))
+            : null}
         </CardsContainer>
       </div>
     </Fade>
