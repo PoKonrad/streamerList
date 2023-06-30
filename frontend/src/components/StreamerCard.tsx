@@ -15,6 +15,7 @@ import React, { useEffect, useState } from "react";
 import PlatformIcon from "./PlatformIcon";
 import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
+import { socket } from "../socket";
 
 const CardContainer = styled(Card)({
   minWidth: "20rem",
@@ -70,8 +71,21 @@ interface UpvoteMutatationParams {
 const StreamerCard: React.FC<StreamerCardProps> = ({ streamer }) => {
   const navigate = useNavigate();
   const [randomImgNumber, setRandomImgNumber] = useState(0);
+  const [upvotesCount, setUpvotesCount] = useState(streamer.upvotesCount);
   useEffect(() => {
     setRandomImgNumber(Math.floor(Math.random() * 3000));
+  }, []);
+
+  useEffect(() => {
+    const updateUpvotes = (newCount: string) => {
+      setUpvotesCount(JSON.parse(newCount).newCount);
+    };
+
+    socket.on(`upvotes/${streamer.id}`, updateUpvotes);
+
+    return () => {
+      socket.off(`upvotes/${streamer.id}`, updateUpvotes);
+    };
   }, []);
 
   const { mutate, isLoading, isError, error } = useMutation({
@@ -84,10 +98,11 @@ const StreamerCard: React.FC<StreamerCardProps> = ({ streamer }) => {
         headers: {
           "Content-Type": "application/json",
         },
-      }).then((resp) => resp.json());
+      });
     },
   });
-  const handleUpvote = () => {
+  const handleUpvote = (e: MouseEvent) => {
+    e.stopPropagation();
     if (selectedVote === "upvote") {
       setSelectedVote("");
       mutate({
@@ -103,7 +118,8 @@ const StreamerCard: React.FC<StreamerCardProps> = ({ streamer }) => {
     setSelectedVote("upvote");
   };
 
-  const handleDownvote = () => {
+  const handleDownvote = (e: MouseEvent) => {
+    e.stopPropagation();
     if (selectedVote === "downvote") {
       setSelectedVote("");
       mutate({
@@ -150,14 +166,14 @@ const StreamerCard: React.FC<StreamerCardProps> = ({ streamer }) => {
             <Typography
               variant="subtitle1"
               color={
-                streamer.upvotesCount < 0
+                upvotesCount < 0
                   ? red[400]
-                  : streamer.upvotesCount > 0
+                  : upvotesCount > 0
                   ? green[400]
                   : grey[400]
               }
             >
-              {streamer.upvotesCount}
+              {upvotesCount}
             </Typography>
             <IconButton
               onClick={handleDownvote}
@@ -169,6 +185,7 @@ const StreamerCard: React.FC<StreamerCardProps> = ({ streamer }) => {
             </IconButton>
           </CardVoting>
         </CardMediaContainer>
+
         <CardContentDescription>{streamer.description}</CardContentDescription>
       </CardActionArea>
     </CardContainer>
