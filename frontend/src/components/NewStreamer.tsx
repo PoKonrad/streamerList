@@ -1,6 +1,7 @@
 import { Close } from "@mui/icons-material";
 import {
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -12,6 +13,10 @@ import {
   TextField,
   styled,
 } from "@mui/material";
+import { useContext, useState } from "react";
+import { ModalContext } from "../pages/Index";
+import { useMutation } from "react-query";
+import { StreamerBody } from "../types";
 const platforms = ["Twitch", "YouTube", "TikTok", "Kick", "Rumble"];
 
 const DialogContentContainer = styled(DialogContent)({
@@ -30,8 +35,44 @@ const DialogContentContainerSection = styled("div")({
 });
 
 const NewStreamer = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    description: "",
+    platform: "twitch",
+  });
+  const handleInputChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const { modalOpen, setModalOpen } = useContext(ModalContext);
+
+  const { mutate, isLoading, isError, error } = useMutation({
+    mutationFn: (body: StreamerBody) => {
+      return fetch(`/api/streamers`, {
+        method: "POST",
+        body: JSON.stringify(body),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }).then((resp) => resp.json());
+    },
+  });
+
+  const handleSubmit = () => {
+    mutate(formData);
+    setModalOpen(false);
+  };
+
   return (
-    <Dialog open={false} maxWidth="lg" fullWidth>
+    <Dialog
+      open={modalOpen}
+      maxWidth="lg"
+      fullWidth
+      onClose={() => setModalOpen(false)}
+    >
       <DialogTitle>
         Add your favorite streamer
         <IconButton sx={{ position: "absolute", right: 8, top: 8 }}>
@@ -40,8 +81,17 @@ const NewStreamer = () => {
       </DialogTitle>
       <DialogContentContainer>
         <DialogContentContainerSection>
-          <TextField label="Streamer Name" />
-          <Select label="Platform">
+          <TextField
+            label="Streamer Name"
+            name="name"
+            onChange={handleInputChange}
+          />
+          <Select
+            label="Platform"
+            name="platform"
+            value={formData.platform}
+            onChange={handleInputChange}
+          >
             {platforms.map((el) => (
               <MenuItem value={el.toLowerCase()} key={el}>
                 {el}
@@ -50,13 +100,23 @@ const NewStreamer = () => {
           </Select>
         </DialogContentContainerSection>
         <DialogContentContainerSection>
-          <TextField multiline minRows={6} label="Description" />
+          <TextField
+            multiline
+            minRows={6}
+            label="Description"
+            name="description"
+            onChange={handleInputChange}
+          />
         </DialogContentContainerSection>
       </DialogContentContainer>
       <Divider />
       <DialogActions>
-        <Button color="error">Cancel</Button>
-        <Button>Save</Button>
+        <Button color="error" onClick={() => setModalOpen(false)}>
+          Cancel
+        </Button>
+        <Button onClick={handleSubmit}>
+          {isLoading ? <CircularProgress /> : "Save"}
+        </Button>
       </DialogActions>
     </Dialog>
   );

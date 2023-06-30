@@ -22,10 +22,11 @@ const Background = styled("div")({
     margin: 0,
     padding: 0,
     width: "102vw",
+    boxShadow: "-8px 8px 24px 0px rgba(0, 0, 0, 0.3)",
   },
 });
 
-const SpotlightContainer = styled("div")({
+const StreamerHeaderContainer = styled("div")({
   height: "72vh",
   display: "flex",
   flexDirection: "column",
@@ -36,44 +37,43 @@ const TextContainer = styled("div")({
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
-  transform: "skewY(-4deg)",
+  transform: "skewY(-5deg) translateY(30px)",
+  boxShadow: "-8px 8px 24px 0px rgba(0, 0, 0, 0.3)",
+  padding: "4rem",
+  backgroundColor: "rgba(0, 0, 0, 0.1)",
+  borderRadius: "1rem",
 });
 
 const ImageContainer = styled(Paper)({
-  maxWidth: "25rem",
-  maxHeight: "25rem",
-  minWidth: "20rem",
-  minHeight: "20rem",
+  width: "22rem",
+  height: "22rem",
   overflow: "hidden",
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
   padding: "2rem",
   borderRadius: "1rem",
-  transform: "skewY(-4deg)",
+  transform: "skewY(-5deg) translateY(30px)",
+  boxShadow: "-8px 8px 24px 0px rgba(0, 0, 0, 0.5)",
 });
 
-interface SpotlightProps {
-  streamers: StreamerResp;
+interface StreamerHeaderProps {
+  streamer: Streamer;
+  text: string;
+  img: string;
 }
 
-const Spotlight: React.FC<SpotlightProps> = ({ streamers }) => {
-  const [spotlightStreamer, setSpotlightStreamer] = useState<
-    Streamer | undefined
-  >();
-
-  useEffect(() => {
-    setSpotlightStreamer(
-      streamers[Math.floor(Math.random() * streamers?.length)]
-    );
-  }, []);
-
-  if (!streamers) {
+const StreamerHeader: React.FC<StreamerHeaderProps> = ({
+  streamer,
+  text,
+  img,
+}) => {
+  if (!streamer) {
     return null;
   }
 
   return (
-    <SpotlightContainer>
+    <StreamerHeaderContainer>
       <Background>
         <TextContainer>
           <Typography
@@ -82,16 +82,16 @@ const Spotlight: React.FC<SpotlightProps> = ({ streamers }) => {
               letterSpacing: "-2px",
             }}
           >
-            Today's Spotlight
+            {text}
           </Typography>
-          <Typography variant="h3">{spotlightStreamer?.name}</Typography>
+          <Typography variant="h3">{streamer?.name}</Typography>
         </TextContainer>
         <ImageContainer>
-          <img src="https://cataas.com/cat" />
+          <img src={img} />
         </ImageContainer>
       </Background>
-    </SpotlightContainer>
+    </StreamerHeaderContainer>
   );
 };
 
-export default Spotlight;
+export default StreamerHeader;
