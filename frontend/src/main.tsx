@@ -4,7 +4,7 @@ import App from "./App.tsx";
 import "./index.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Index from "./pages/Index.tsx";
-import Streamer from "./pages/Streamer.tsx";
+import StreamerType from "./pages/Streamer.tsx";
 import { ThemeProvider, createTheme } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "react-query";
 
@@ -14,8 +14,8 @@ const router = createBrowserRouter([
     element: <Index />,
   },
   {
-    path: "/streamer",
-    element: <Streamer />,
+    path: "/streamer/:id",
+    element: <StreamerType />,
   },
 ]);
 
