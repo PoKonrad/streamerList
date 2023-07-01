@@ -1,6 +1,6 @@
 import { Paper, Typography, styled } from "@mui/material";
-import { Streamer, StreamerResp } from "../types";
-import React, { useEffect, useState } from "react";
+import { Streamer } from "../types";
+import React from "react";
 
 const Background = styled("div")({
   position: "relative",
