@@ -16,6 +16,7 @@ import PlatformIcon from "./PlatformIcon";
 import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { socket } from "../socket";
+import apiClient from "../apiClient";
 
 const CardContainer = styled(Card)({
   minWidth: "20rem",
@@ -88,20 +89,16 @@ const StreamerCard: React.FC<StreamerCardProps> = ({ streamer }) => {
     };
   }, []);
 
-  const { mutate, isLoading, isError, error } = useMutation({
+  const { mutate } = useMutation({
     mutationFn: (params: UpvoteMutatationParams) => {
-      return fetch(`/api/streamers/${params.id}`, {
-        method: "PUT",
+      return apiClient.put(`/streamers/${params.id}`, {
         body: JSON.stringify({
           type: params.type,
         }),
-        headers: {
-          "Content-Type": "application/json",
-        },
       });
     },
   });
-  const handleUpvote = (e: MouseEvent) => {
+  const handleUpvote = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
     if (selectedVote === "upvote") {
       setSelectedVote("");
@@ -118,7 +115,7 @@ const StreamerCard: React.FC<StreamerCardProps> = ({ streamer }) => {
     setSelectedVote("upvote");
   };
 
-  const handleDownvote = (e: MouseEvent) => {
+  const handleDownvote = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
     if (selectedVote === "downvote") {
       setSelectedVote("");
@@ -154,7 +151,7 @@ const StreamerCard: React.FC<StreamerCardProps> = ({ streamer }) => {
             component={"img"}
             height="144"
           />
-          <CardVoting>
+          <CardVoting onClick={(e) => e.stopPropagation()}>
             <IconButton
               onClick={handleUpvote}
               disabled={selectedVote === "downvote"}

@@ -1,12 +1,14 @@
 import { Box, Button, Fade, Typography, styled } from "@mui/material";
 import StreamerCard from "../components/StreamerCard";
 import { useQuery, useQueryClient } from "react-query";
-import type { Streamer } from "../types";
+import type { Streamer, StreamerResp } from "../types";
 import { Add } from "@mui/icons-material";
 import NewStreamer from "../components/NewStreamer";
 import { createContext, useEffect, useState } from "react";
 import StreamerHeader from "../components/StreamerHeader";
 import { socket } from "../socket";
+import apiClient from "../apiClient";
+import { AxiosError, AxiosResponse } from "axios";
 
 const Bar = styled("div")({
   width: "100%",
@@ -34,9 +36,13 @@ export const ModalContext = createContext<ModalContextValue>({
 
 const Index = () => {
   const queryClient = useQueryClient();
-  const { data, isLoading, isError } = useQuery(["streamers"], () =>
-    fetch("/api/streamers").then((resp) => resp.json())
-  );
+  const { data, isLoading, isError, error } = useQuery<
+    AxiosResponse<StreamerResp>,
+    AxiosError
+  >(["streamers"], {
+    queryFn: () => apiClient.get("/streamers"),
+    cacheTime: 0,
+  });
 
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -56,6 +62,7 @@ const Index = () => {
 
   if (isError) {
     <Typography>An error has occured</Typography>;
+    <Typography>{error.message}</Typography>;
   }
 
   return (
@@ -66,7 +73,7 @@ const Index = () => {
         </ModalContext.Provider>
         <StreamerHeader
           text={`Today's spotlight`}
-          streamer={data[0]}
+          streamer={data?.data[0]}
           img={`https://cataas.com/cat?t=5`}
         />
         <Bar>
@@ -76,8 +83,8 @@ const Index = () => {
           </Button>
         </Bar>
         <CardsContainer>
-          {data
-            ? data.map((streamer: Streamer) => (
+          {data?.data
+            ? data?.data?.map((streamer: Streamer) => (
                 <StreamerCard streamer={streamer} key={streamer.id} />
               ))
             : null}

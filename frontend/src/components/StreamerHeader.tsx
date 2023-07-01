@@ -58,9 +58,9 @@ const ImageContainer = styled(Paper)({
 });
 
 interface StreamerHeaderProps {
-  streamer: Streamer;
-  text: string;
-  img: string;
+  streamer: Streamer | undefined;
+  text: string | undefined;
+  img: string | undefined;
 }
 
 const StreamerHeader: React.FC<StreamerHeaderProps> = ({
