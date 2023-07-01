@@ -4,7 +4,7 @@ import StreamerHeader from "../components/StreamerHeader";
 import { Streamer as StreamerType } from "../types";
 import { Fade, Paper, Typography, styled } from "@mui/material";
 import apiClient from "../apiClient";
-import type { AxiosError } from "axios";
+import type { AxiosError, AxiosResponse } from "axios";
 
 const Description = styled(Paper)({
   width: "40rem",
@@ -17,7 +17,7 @@ const Description = styled(Paper)({
 const StreamerType = () => {
   const params = useParams();
   const { data, isLoading, isError, error } = useQuery<
-    StreamerType,
+    AxiosResponse<StreamerType>,
     AxiosError
   >(["streamer"], {
     queryFn: () => {
