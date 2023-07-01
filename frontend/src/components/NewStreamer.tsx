@@ -49,7 +49,7 @@ const NewStreamer = () => {
 
   const { modalOpen, setModalOpen } = useContext(ModalContext);
 
-  const { mutate, isLoading, isError, error } = useMutation({
+  const { mutate, isLoading } = useMutation({
     mutationFn: (body: StreamerBody) => {
       return fetch(`/api/streamers`, {
         method: "POST",
@@ -63,19 +63,21 @@ const NewStreamer = () => {
 
   const handleSubmit = () => {
     mutate(formData);
+    closeModal();
+  };
+
+  const closeModal = () => {
     setModalOpen(false);
   };
 
   return (
-    <Dialog
-      open={modalOpen}
-      maxWidth="lg"
-      fullWidth
-      onClose={() => setModalOpen(false)}
-    >
+    <Dialog open={modalOpen} maxWidth="lg" fullWidth onClose={closeModal}>
       <DialogTitle>
         Add your favorite streamer
-        <IconButton sx={{ position: "absolute", right: 8, top: 8 }}>
+        <IconButton
+          sx={{ position: "absolute", right: 8, top: 8 }}
+          onClick={closeModal}
+        >
           <Close />
         </IconButton>
       </DialogTitle>
