@@ -1,12 +1,11 @@
 import { Box, Button, Fade, LinearProgress, Typography, styled } from '@mui/material';
 import StreamerCard from '../components/StreamerCard';
-import { useQuery, useQueryClient } from 'react-query';
+import { useQuery } from 'react-query';
 import type { Streamer, StreamerResp } from '../types';
 import { Add } from '@mui/icons-material';
 import NewStreamer from '../components/NewStreamer';
-import { createContext, useEffect, useState } from 'react';
+import { createContext, useState } from 'react';
 import StreamerHeader from '../components/StreamerHeader';
-import { socket } from '../socket';
 import apiClient from '../apiClient';
 import { AxiosError, AxiosResponse } from 'axios';
 import { useNewStreamerEvent } from '../hooks/useNewStreamerEvent';
@@ -67,8 +66,7 @@ const Index = () => {
           value={{
             formDialogOpen: formDialogOpen,
             setFormDialogOpen: setFormDialogOpen
-          }}
-        >
+          }}>
           <NewStreamer />
         </FormDialogContext.Provider>
         <StreamerHeader
