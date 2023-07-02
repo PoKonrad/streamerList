@@ -7,12 +7,9 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": { target: "http://localhost:3000/", ws: true },
-      "/ws": {
+      "/socket.io/": {
         target: "http://localhost:3000/",
         ws: true,
-        rewrite(path) {
-          return path.replace("/ws", "");
-        },
       },
     },
   },
