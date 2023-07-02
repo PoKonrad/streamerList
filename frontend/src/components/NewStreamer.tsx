@@ -14,21 +14,20 @@ import {
   styled,
 } from "@mui/material";
 import { useContext, useEffect } from "react";
-import { ModalContext } from "../pages/Index";
+import { FormDialogContext } from "../pages/Index";
 import { useMutation } from "react-query";
 import { StreamerBody } from "../types";
 import { object, string } from "yup";
 import { useFormik } from "formik";
-import { SnackbarContext } from "../main";
 import apiClient from "../apiClient";
 import { AxiosError } from "axios";
+import { useNotification } from "../hooks/useNotifaction";
 const platforms = ["Twitch", "YouTube", "TikTok", "Kick", "Rumble"];
 
 const DialogContentContainer = styled(DialogContent)({
   display: "flex",
   flexDirection: "row",
-  justifyContent: "space-around",
-  height: "14.6rem",
+  justifyContent: "space-between",
 });
 
 const DialogContentContainerSection = styled("div")({
@@ -49,8 +48,8 @@ const streamerSchema = object({
 });
 
 const NewStreamer = () => {
-  const { modalOpen, setModalOpen } = useContext(ModalContext);
-  const { setSnackbarOpen } = useContext(SnackbarContext);
+  const { formDialogOpen, setFormDialogOpen } = useContext(FormDialogContext);
+  const { successNotification, errorNotification } = useNotification();
 
   const { mutate, isLoading, isError, error, isSuccess } = useMutation({
     mutationFn: (body: StreamerBody) => {
@@ -58,31 +57,13 @@ const NewStreamer = () => {
     },
   });
 
-  useEffect(() => {
-    if (isSuccess) {
-      console.log("succ");
-      setSnackbarOpen({
-        alertType: "success",
-        isOpen: true,
-        text: "Added successfully",
-      });
-    }
-    if (isError) {
-      setSnackbarOpen({
-        alertType: "error",
-        isOpen: true,
-        text: `An error has occured: ${(error as AxiosError).message}`,
-      });
-    }
-  }, [isSuccess, isError]);
-
   const handleSend = () => {
     mutate(values);
     closeModal();
   };
 
   const closeModal = () => {
-    setModalOpen(false);
+    setFormDialogOpen(false);
   };
 
   const { values, handleChange, handleSubmit, errors } = useFormik({
@@ -95,8 +76,19 @@ const NewStreamer = () => {
     onSubmit: () => handleSend(),
   });
 
+  useEffect(() => {
+    if (isSuccess) {
+      successNotification(`Streamer successfully added!`);
+    }
+    if (isError) {
+      errorNotification(
+        `An error has occured: ${(error as AxiosError).message}`
+      );
+    }
+  }, [isSuccess, isError]);
+
   return (
-    <Dialog open={modalOpen} maxWidth="lg" fullWidth onClose={closeModal}>
+    <Dialog open={formDialogOpen} maxWidth="lg" fullWidth onClose={closeModal}>
       <DialogTitle>
         Add your favorite streamer
         <IconButton
@@ -143,7 +135,7 @@ const NewStreamer = () => {
         </DialogContentContainer>
         <Divider />
         <DialogActions>
-          <Button color="error" onClick={() => setModalOpen(false)}>
+          <Button color="error" onClick={() => setFormDialogOpen(false)}>
             Cancel
           </Button>
           <Button type="submit">
