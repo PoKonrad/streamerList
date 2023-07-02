@@ -10,17 +10,22 @@ import {
 import { Platform, Streamer } from "../types";
 import React, { useEffect, useState } from "react";
 import PlatformIcon from "./PlatformIcon";
-import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
-import { socket } from "../socket";
-import apiClient from "../apiClient";
 import CardVoting from "./CardVoting";
 
-const CardContainer = styled(Card)({
-  minWidth: "20rem",
-  maxWidth: "25rem",
-  height: "25rem",
-  flexGrow: "1",
+const CardContainer = styled("div")({
+  maxWidth: "50%",
+  width: "25rem",
+  flexGrow: 1,
+  padding: "0.5rem",
+});
+
+const CardElement = styled(Card)({});
+
+const CardActionElement = styled(CardActionArea)({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "stretch",
 });
 
 const CardMediaContainer = styled("div")({
@@ -33,13 +38,28 @@ const CardMediaContainer = styled("div")({
 });
 
 const CardContentDescription = styled(CardContent)({
-  height: "10rem",
   overflowWrap: "break-word",
+  height: "calc(2.2em + 16px*2)",
+  fontSize: "1em",
+  textOverflow: "ellipsis",
+  overflow: "hidden",
+  flexGrow: 1,
+  position: "relative",
 });
 
 const TitleContainer = styled("div")({
   display: "flex",
   justifyContent: "space-between",
+
+  "& .MuiTypography-root": {
+    maxWidth: "50%",
+    textOverflow: "ellipsis",
+    overflow: "hidden",
+  },
+
+  "& img": {
+    flexShrink: 0,
+  },
 });
 
 interface StreamerCardProps {
@@ -57,26 +77,33 @@ const StreamerCard: React.FC<StreamerCardProps> = ({ streamer }) => {
 
   return (
     <CardContainer>
-      <CardActionArea onClick={() => navigate(`/streamer/${streamer.id}`)}>
-        <CardHeader
-          disableTypography={true}
-          title={
-            <TitleContainer>
-              <Typography variant="h5">{streamer.name}</Typography>
-              <PlatformIcon platform={streamer.platform as Platform} />
-            </TitleContainer>
-          }
-        />
-        <CardMediaContainer>
-          <CardMedia
-            image={`https://cataas.com/cat?t=${randomImgNumber}`}
-            component={"img"}
-            height="144"
+      <CardElement>
+        <CardActionElement onClick={() => navigate(`/streamer/${streamer.id}`)}>
+          <CardHeader
+            sx={{
+              "& .MuiCardHeader-content": { maxWidth: "100%" },
+            }}
+            disableTypography={true}
+            title={
+              <TitleContainer>
+                <Typography variant="h5">{streamer.name}</Typography>
+                <PlatformIcon platform={streamer.platform as Platform} />
+              </TitleContainer>
+            }
           />
-          <CardVoting streamer={streamer} />
-        </CardMediaContainer>
-        <CardContentDescription>{streamer.description}</CardContentDescription>
-      </CardActionArea>
+          <CardMediaContainer>
+            <CardMedia
+              image={`https://cataas.com/cat?t=${randomImgNumber}`}
+              component={"img"}
+              height="144"
+            />
+            <CardVoting streamer={streamer} />
+          </CardMediaContainer>
+          <CardContentDescription>
+            {streamer.description}
+          </CardContentDescription>
+        </CardActionElement>
+      </CardElement>
     </CardContainer>
   );
 };

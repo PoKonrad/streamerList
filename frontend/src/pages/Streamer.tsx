@@ -7,11 +7,11 @@ import apiClient from "../apiClient";
 import type { AxiosError, AxiosResponse } from "axios";
 
 const Description = styled(Paper)({
-  width: "40rem",
   minHeight: "10rem",
   borderRadius: "1rem",
   margin: "1rem",
   padding: "1rem",
+  wordWrap: "break-word",
 });
 
 const StreamerType = () => {

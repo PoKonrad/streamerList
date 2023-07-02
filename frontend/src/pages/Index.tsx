@@ -1,4 +1,11 @@
-import { Box, Button, Fade, Typography, styled } from "@mui/material";
+import {
+  Box,
+  Button,
+  Fade,
+  LinearProgress,
+  Typography,
+  styled,
+} from "@mui/material";
 import StreamerCard from "../components/StreamerCard";
 import { useQuery, useQueryClient } from "react-query";
 import type { Streamer, StreamerResp } from "../types";
@@ -11,14 +18,14 @@ import apiClient from "../apiClient";
 import { AxiosError, AxiosResponse } from "axios";
 
 const Bar = styled("div")({
-  width: "100%",
   display: "flex",
   justifyContent: "space-between",
+  marginBottom: "1rem",
+  marginInline: "0.5rem",
 });
 
 const CardsContainer = styled(Box)({
   display: "flex",
-  gap: "2rem",
   width: "100%",
   flexWrap: "wrap",
   justifyContent: "center",
@@ -57,7 +64,11 @@ const Index = () => {
   }, []);
 
   if (isLoading) {
-    return null;
+    return (
+      <Box sx={{ width: "100%" }}>
+        <LinearProgress />
+      </Box>
+    );
   }
 
   if (isError) {

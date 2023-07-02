@@ -9,7 +9,7 @@ const Background = styled("div")({
   display: "flex",
   alignItems: "center",
   justifyContent: "space-around",
-  height: "20%",
+  height: "40%",
 
   "&::after": {
     content: "''",
