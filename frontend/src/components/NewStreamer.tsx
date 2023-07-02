@@ -13,12 +13,15 @@ import {
   TextField,
   styled,
 } from "@mui/material";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { ModalContext } from "../pages/Index";
 import { useMutation } from "react-query";
 import { StreamerBody } from "../types";
 import { object, string } from "yup";
 import { useFormik } from "formik";
+import { SnackbarContext } from "../main";
+import apiClient from "../apiClient";
+import { AxiosError } from "axios";
 const platforms = ["Twitch", "YouTube", "TikTok", "Kick", "Rumble"];
 
 const DialogContentContainer = styled(DialogContent)({
@@ -47,18 +50,31 @@ const streamerSchema = object({
 
 const NewStreamer = () => {
   const { modalOpen, setModalOpen } = useContext(ModalContext);
+  const { setSnackbarOpen } = useContext(SnackbarContext);
 
-  const { mutate, isLoading } = useMutation({
+  const { mutate, isLoading, isError, error, isSuccess } = useMutation({
     mutationFn: (body: StreamerBody) => {
-      return fetch(`/api/streamers`, {
-        method: "POST",
-        body: JSON.stringify(body),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }).then((resp) => resp.json());
+      return apiClient.post(`/streamers`, body);
     },
   });
+
+  useEffect(() => {
+    if (isSuccess) {
+      console.log("succ");
+      setSnackbarOpen({
+        alertType: "success",
+        isOpen: true,
+        text: "Added successfully",
+      });
+    }
+    if (isError) {
+      setSnackbarOpen({
+        alertType: "error",
+        isOpen: true,
+        text: `An error has occured: ${(error as AxiosError).message}`,
+      });
+    }
+  }, [isSuccess, isError]);
 
   const handleSend = () => {
     mutate(values);
