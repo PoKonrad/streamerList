@@ -1,6 +1,6 @@
-import { Alert, Snackbar } from "@mui/material";
-import { useContext } from "react";
-import { SnackbarContext } from "../main";
+import { Alert, Snackbar } from '@mui/material';
+import { useContext } from 'react';
+import { SnackbarContext } from '../main';
 
 const NotificationSnackbar = () => {
   const { setSnackbarOpen, snackbarOpen } = useContext(SnackbarContext);

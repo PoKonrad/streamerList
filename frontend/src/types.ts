@@ -15,4 +15,4 @@ export interface StreamerBody {
   platform: string;
 }
 
-export type Platform = "Twitch" | "YouTube" | "TikTok" | "Kick" | "Rumble";
+export type Platform = 'Twitch' | 'YouTube' | 'TikTok' | 'Kick' | 'Rumble';

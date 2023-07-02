@@ -1,35 +1,28 @@
-import {
-  Box,
-  Button,
-  Fade,
-  LinearProgress,
-  Typography,
-  styled,
-} from "@mui/material";
-import StreamerCard from "../components/StreamerCard";
-import { useQuery, useQueryClient } from "react-query";
-import type { Streamer, StreamerResp } from "../types";
-import { Add } from "@mui/icons-material";
-import NewStreamer from "../components/NewStreamer";
-import { createContext, useEffect, useState } from "react";
-import StreamerHeader from "../components/StreamerHeader";
-import { socket } from "../socket";
-import apiClient from "../apiClient";
-import { AxiosError, AxiosResponse } from "axios";
-import { useNewStreamerEvent } from "../hooks/useNewStreamerEvent";
+import { Box, Button, Fade, LinearProgress, Typography, styled } from '@mui/material';
+import StreamerCard from '../components/StreamerCard';
+import { useQuery, useQueryClient } from 'react-query';
+import type { Streamer, StreamerResp } from '../types';
+import { Add } from '@mui/icons-material';
+import NewStreamer from '../components/NewStreamer';
+import { createContext, useEffect, useState } from 'react';
+import StreamerHeader from '../components/StreamerHeader';
+import { socket } from '../socket';
+import apiClient from '../apiClient';
+import { AxiosError, AxiosResponse } from 'axios';
+import { useNewStreamerEvent } from '../hooks/useNewStreamerEvent';
 
-const Bar = styled("div")({
-  display: "flex",
-  justifyContent: "space-between",
-  marginBottom: "1rem",
-  marginInline: "0.5rem",
+const Bar = styled('div')({
+  display: 'flex',
+  justifyContent: 'space-between',
+  marginBottom: '1rem',
+  marginInline: '0.5rem'
 });
 
 const CardsContainer = styled(Box)({
-  display: "flex",
-  width: "100%",
-  flexWrap: "wrap",
-  justifyContent: "center",
+  display: 'flex',
+  width: '100%',
+  flexWrap: 'wrap',
+  justifyContent: 'center'
 });
 
 interface FormDialogContextValue {
@@ -39,24 +32,24 @@ interface FormDialogContextValue {
 
 export const FormDialogContext = createContext<FormDialogContextValue>({
   formDialogOpen: false,
-  setFormDialogOpen: () => "",
+  setFormDialogOpen: () => ''
 });
 
 const Index = () => {
-  const { data, isLoading, isError, error } = useQuery<
-    AxiosResponse<StreamerResp>,
-    AxiosError
-  >(["streamers"], {
-    queryFn: () => apiClient.get("/streamers"),
-    cacheTime: 0,
-  });
+  const { data, isLoading, isError, error } = useQuery<AxiosResponse<StreamerResp>, AxiosError>(
+    ['streamers'],
+    {
+      queryFn: () => apiClient.get('/streamers'),
+      cacheTime: 0
+    }
+  );
 
   const [formDialogOpen, setFormDialogOpen] = useState(false);
   useNewStreamerEvent();
 
   if (isLoading) {
     return (
-      <Box sx={{ width: "100%" }}>
+      <Box sx={{ width: '100%' }}>
         <LinearProgress />
       </Box>
     );
@@ -73,7 +66,7 @@ const Index = () => {
         <FormDialogContext.Provider
           value={{
             formDialogOpen: formDialogOpen,
-            setFormDialogOpen: setFormDialogOpen,
+            setFormDialogOpen: setFormDialogOpen
           }}
         >
           <NewStreamer />

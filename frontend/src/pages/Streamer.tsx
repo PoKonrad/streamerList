@@ -1,29 +1,29 @@
-import { useQuery } from "react-query";
-import { useParams } from "react-router-dom";
-import StreamerHeader from "../components/StreamerHeader";
-import { Streamer as StreamerType } from "../types";
-import { Fade, LinearProgress, Paper, Typography, styled } from "@mui/material";
-import apiClient from "../apiClient";
-import type { AxiosError, AxiosResponse } from "axios";
+import { useQuery } from 'react-query';
+import { useParams } from 'react-router-dom';
+import StreamerHeader from '../components/StreamerHeader';
+import { Streamer as StreamerType } from '../types';
+import { Fade, LinearProgress, Paper, Typography, styled } from '@mui/material';
+import apiClient from '../apiClient';
+import type { AxiosError, AxiosResponse } from 'axios';
 
 const Description = styled(Paper)({
-  minHeight: "10rem",
-  borderRadius: "1rem",
-  margin: "1rem",
-  padding: "1rem",
-  wordWrap: "break-word",
+  minHeight: '10rem',
+  borderRadius: '1rem',
+  margin: '1rem',
+  padding: '1rem',
+  wordWrap: 'break-word'
 });
 
 const StreamerType = () => {
   const params = useParams();
-  const { data, isLoading, isError, error } = useQuery<
-    AxiosResponse<StreamerType>,
-    AxiosError
-  >(["streamer"], {
-    queryFn: () => {
-      return apiClient.get(`/streamers/${params.id}`);
-    },
-  });
+  const { data, isLoading, isError, error } = useQuery<AxiosResponse<StreamerType>, AxiosError>(
+    ['streamer'],
+    {
+      queryFn: () => {
+        return apiClient.get(`/streamers/${params.id}`);
+      }
+    }
+  );
 
   if (isLoading) {
     return <LinearProgress />;

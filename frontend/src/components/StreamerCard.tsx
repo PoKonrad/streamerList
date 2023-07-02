@@ -5,61 +5,61 @@ import {
   CardHeader,
   CardMedia,
   Typography,
-  styled,
-} from "@mui/material";
-import { Platform, Streamer } from "../types";
-import React, { useEffect, useState } from "react";
-import PlatformIcon from "./PlatformIcon";
-import { useNavigate } from "react-router-dom";
-import CardVoting from "./CardVoting";
+  styled
+} from '@mui/material';
+import { Platform, Streamer } from '../types';
+import React, { useEffect, useState } from 'react';
+import PlatformIcon from './PlatformIcon';
+import { useNavigate } from 'react-router-dom';
+import CardVoting from './CardVoting';
 
-const CardContainer = styled("div")({
-  maxWidth: "50%",
-  width: "25rem",
+const CardContainer = styled('div')({
+  maxWidth: '50%',
+  width: '25rem',
   flexGrow: 1,
-  padding: "0.5rem",
+  padding: '0.5rem'
 });
 
 const CardElement = styled(Card)({});
 
 const CardActionElement = styled(CardActionArea)({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "stretch",
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'stretch'
 });
 
-const CardMediaContainer = styled("div")({
-  display: "flex",
+const CardMediaContainer = styled('div')({
+  display: 'flex',
   flexGrow: 1,
-  justifyContent: "space-between",
-  alignItems: "flex-start",
+  justifyContent: 'space-between',
+  alignItems: 'flex-start',
   height: 144,
-  position: "relative",
+  position: 'relative'
 });
 
 const CardContentDescription = styled(CardContent)({
-  overflowWrap: "break-word",
-  height: "calc(2.2em + 16px*2)",
-  fontSize: "1em",
-  textOverflow: "ellipsis",
-  overflow: "hidden",
+  overflowWrap: 'break-word',
+  height: 'calc(2.2em + 16px*2)',
+  fontSize: '1em',
+  textOverflow: 'ellipsis',
+  overflow: 'hidden',
   flexGrow: 1,
-  position: "relative",
+  position: 'relative'
 });
 
-const TitleContainer = styled("div")({
-  display: "flex",
-  justifyContent: "space-between",
+const TitleContainer = styled('div')({
+  display: 'flex',
+  justifyContent: 'space-between',
 
-  "& .MuiTypography-root": {
-    maxWidth: "50%",
-    textOverflow: "ellipsis",
-    overflow: "hidden",
+  '& .MuiTypography-root': {
+    maxWidth: '50%',
+    textOverflow: 'ellipsis',
+    overflow: 'hidden'
   },
 
-  "& img": {
-    flexShrink: 0,
-  },
+  '& img': {
+    flexShrink: 0
+  }
 });
 
 interface StreamerCardProps {
@@ -81,7 +81,7 @@ const StreamerCard: React.FC<StreamerCardProps> = ({ streamer }) => {
         <CardActionElement onClick={() => navigate(`/streamer/${streamer.id}`)}>
           <CardHeader
             sx={{
-              "& .MuiCardHeader-content": { maxWidth: "100%" },
+              '& .MuiCardHeader-content': { maxWidth: '100%' }
             }}
             disableTypography={true}
             title={
@@ -94,14 +94,12 @@ const StreamerCard: React.FC<StreamerCardProps> = ({ streamer }) => {
           <CardMediaContainer>
             <CardMedia
               image={`https://cataas.com/cat?t=${randomImgNumber}`}
-              component={"img"}
+              component={'img'}
               height="144"
             />
             <CardVoting streamer={streamer} />
           </CardMediaContainer>
-          <CardContentDescription>
-            {streamer.description}
-          </CardContentDescription>
+          <CardContentDescription>{streamer.description}</CardContentDescription>
         </CardActionElement>
       </CardElement>
     </CardContainer>

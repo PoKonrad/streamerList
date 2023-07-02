@@ -1,35 +1,35 @@
-import { useContext } from "react";
-import { SnackbarContext } from "../main";
+import { useContext } from 'react';
+import { SnackbarContext } from '../main';
 
 export const useNotification = () => {
   const { setSnackbarOpen } = useContext(SnackbarContext);
 
   const errorNotification = (message: string) => {
     setSnackbarOpen({
-      alertType: "error",
+      alertType: 'error',
       isOpen: true,
-      text: message,
+      text: message
     });
   };
   const infoNotification = (message: string) => {
     setSnackbarOpen({
-      alertType: "info",
+      alertType: 'info',
       isOpen: true,
-      text: message,
+      text: message
     });
   };
   const successNotification = (message: string) => {
     setSnackbarOpen({
-      alertType: "success",
+      alertType: 'success',
       isOpen: true,
-      text: message,
+      text: message
     });
   };
   const warningNotification = (message: string) => {
     setSnackbarOpen({
-      alertType: "warning",
+      alertType: 'warning',
       isOpen: true,
-      text: message,
+      text: message
     });
   };
 
@@ -37,6 +37,6 @@ export const useNotification = () => {
     errorNotification,
     infoNotification,
     successNotification,
-    warningNotification,
+    warningNotification
   };
 };

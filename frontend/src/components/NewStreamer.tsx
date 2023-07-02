@@ -1,4 +1,4 @@
-import { Close } from "@mui/icons-material";
+import { Close } from '@mui/icons-material';
 import {
   Button,
   CircularProgress,
@@ -11,40 +11,40 @@ import {
   MenuItem,
   Select,
   TextField,
-  styled,
-} from "@mui/material";
-import { useContext, useEffect } from "react";
-import { FormDialogContext } from "../pages/Index";
-import { useMutation } from "react-query";
-import { StreamerBody } from "../types";
-import { object, string } from "yup";
-import { useFormik } from "formik";
-import apiClient from "../apiClient";
-import { AxiosError } from "axios";
-import { useNotification } from "../hooks/useNotifaction";
-const platforms = ["Twitch", "YouTube", "TikTok", "Kick", "Rumble"];
+  styled
+} from '@mui/material';
+import { useContext, useEffect } from 'react';
+import { FormDialogContext } from '../pages/Index';
+import { useMutation } from 'react-query';
+import { StreamerBody } from '../types';
+import { object, string } from 'yup';
+import { useFormik } from 'formik';
+import apiClient from '../apiClient';
+import { AxiosError } from 'axios';
+import { useNotification } from '../hooks/useNotifaction';
+const platforms = ['Twitch', 'YouTube', 'TikTok', 'Kick', 'Rumble'];
 
 const DialogContentContainer = styled(DialogContent)({
-  display: "flex",
-  flexDirection: "row",
-  justifyContent: "space-between",
+  display: 'flex',
+  flexDirection: 'row',
+  justifyContent: 'space-between'
 });
 
-const DialogContentContainerSection = styled("div")({
-  display: "flex",
-  flexDirection: "column",
+const DialogContentContainerSection = styled('div')({
+  display: 'flex',
+  flexDirection: 'column',
   flexGrow: 1,
-  justifyContent: "space-between",
-  margin: "2rem",
+  justifyContent: 'space-between',
+  margin: '2rem'
 });
 
-const FormContainer = styled("form")({
-  "*": "inherit",
+const FormContainer = styled('form')({
+  '*': 'inherit'
 });
 
 const streamerSchema = object({
   name: string().required().max(30).min(2),
-  description: string().required().max(500),
+  description: string().required().max(500)
 });
 
 const NewStreamer = () => {
@@ -54,7 +54,7 @@ const NewStreamer = () => {
   const { mutate, isLoading, isError, error, isSuccess } = useMutation({
     mutationFn: (body: StreamerBody) => {
       return apiClient.post(`/streamers`, body);
-    },
+    }
   });
 
   const handleSend = () => {
@@ -68,12 +68,12 @@ const NewStreamer = () => {
 
   const { values, handleChange, handleSubmit, errors } = useFormik({
     initialValues: {
-      name: "",
-      description: "",
-      platform: "twitch",
+      name: '',
+      description: '',
+      platform: 'twitch'
     },
     validationSchema: streamerSchema,
-    onSubmit: () => handleSend(),
+    onSubmit: () => handleSend()
   });
 
   useEffect(() => {
@@ -81,9 +81,7 @@ const NewStreamer = () => {
       successNotification(`Streamer successfully added!`);
     }
     if (isError) {
-      errorNotification(
-        `An error has occured: ${(error as AxiosError).message}`
-      );
+      errorNotification(`An error has occured: ${(error as AxiosError).message}`);
     }
   }, [isSuccess, isError]);
 
@@ -91,10 +89,7 @@ const NewStreamer = () => {
     <Dialog open={formDialogOpen} maxWidth="lg" fullWidth onClose={closeModal}>
       <DialogTitle>
         Add your favorite streamer
-        <IconButton
-          sx={{ position: "absolute", right: 8, top: 8 }}
-          onClick={closeModal}
-        >
+        <IconButton sx={{ position: 'absolute', right: 8, top: 8 }} onClick={closeModal}>
           <Close />
         </IconButton>
       </DialogTitle>
@@ -108,12 +103,7 @@ const NewStreamer = () => {
               name="name"
               onChange={handleChange}
             />
-            <Select
-              label="Platform"
-              name="platform"
-              defaultValue="twitch"
-              onChange={handleChange}
-            >
+            <Select label="Platform" name="platform" defaultValue="twitch" onChange={handleChange}>
               {platforms.map((el) => (
                 <MenuItem value={el.toLowerCase()} key={el}>
                   {el}
@@ -138,9 +128,7 @@ const NewStreamer = () => {
           <Button color="error" onClick={() => setFormDialogOpen(false)}>
             Cancel
           </Button>
-          <Button type="submit">
-            {isLoading ? <CircularProgress /> : "Save"}
-          </Button>
+          <Button type="submit">{isLoading ? <CircularProgress /> : 'Save'}</Button>
         </DialogActions>
       </FormContainer>
     </Dialog>

@@ -1,5 +1,5 @@
-import React from "react";
-import { Platform } from "../types";
+import React from 'react';
+import { Platform } from '../types';
 
 interface PlatformIconProps {
   platform: Platform;
