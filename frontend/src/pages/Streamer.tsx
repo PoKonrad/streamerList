@@ -2,7 +2,7 @@ import { useQuery } from "react-query";
 import { useParams } from "react-router-dom";
 import StreamerHeader from "../components/StreamerHeader";
 import { Streamer as StreamerType } from "../types";
-import { Fade, Paper, Typography, styled } from "@mui/material";
+import { Fade, LinearProgress, Paper, Typography, styled } from "@mui/material";
 import apiClient from "../apiClient";
 import type { AxiosError, AxiosResponse } from "axios";
 
@@ -26,12 +26,16 @@ const StreamerType = () => {
   });
 
   if (isLoading) {
-    return null;
+    return <LinearProgress />;
   }
 
   if (isError) {
-    <Typography variant="h2">An error has occured</Typography>;
-    <Typography>{error.message}</Typography>;
+    return (
+      <>
+        <Typography variant="h2">An error has occured</Typography>
+        <Typography>{error.message}</Typography>
+      </>
+    );
   }
 
   if (!data) {
