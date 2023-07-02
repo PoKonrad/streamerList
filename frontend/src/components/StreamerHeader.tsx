@@ -9,7 +9,7 @@ const Background = styled('div')({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-around',
-  height: '40%',
+  height: '60%',
 
   '&::after': {
     content: "''",
@@ -76,8 +76,7 @@ const StreamerHeader: React.FC<StreamerHeaderProps> = ({ streamer, text, img }) 
             variant="h2"
             sx={{
               letterSpacing: '-2px'
-            }}
-          >
+            }}>
             {text}
           </Typography>
           <Typography variant="h3">{streamer?.name}</Typography>
