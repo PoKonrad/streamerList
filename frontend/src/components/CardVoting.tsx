@@ -1,11 +1,12 @@
 import { KeyboardArrowUp, KeyboardArrowDown } from '@mui/icons-material';
 import { IconButton, Typography, styled } from '@mui/material';
 import { green, red, grey } from '@mui/material/colors';
-import React, { useEffect, useState } from 'react';
-import { useMutation } from 'react-query';
-import apiClient from '../apiClient';
-import { socket } from '../socket';
+import React, { useEffect } from 'react';
 import { Streamer } from '../types';
+import { useNotification } from '../hooks/useNotifaction';
+import { AxiosError } from 'axios';
+import { useVoting } from '../hooks/useVoting';
+import { useStreamerUpvoteCount } from '../hooks/useStreamerUpvoteCount';
 
 const VotingContainer = styled('div')({
   display: 'flex',
@@ -24,71 +25,21 @@ const VotingContainer = styled('div')({
   }
 });
 
-interface UpvoteMutatationParams {
-  id: number;
-  type: 'upvote' | 'downvote';
-}
-
 interface CardVotingProps {
   streamer: Streamer;
 }
 
 const CardVoting: React.FC<CardVotingProps> = ({ streamer }) => {
+  const { upvotesCount } = useStreamerUpvoteCount(streamer);
+  const { handleDownvote, handleUpvote, error, isError, selectedVote } = useVoting(streamer);
+  const { errorNotification } = useNotification();
+
   useEffect(() => {
-    const updateUpvotes = (newCount: string) => {
-      setUpvotesCount(JSON.parse(newCount).newCount);
-    };
-
-    socket.on(`upvotes/${streamer.id}`, updateUpvotes);
-
-    return () => {
-      socket.off(`upvotes/${streamer.id}`, updateUpvotes);
-    };
-  }, []);
-
-  const { mutate } = useMutation({
-    mutationFn: (params: UpvoteMutatationParams) => {
-      return apiClient.put(`/streamers/${params.id}/vote`, {
-        type: params.type
-      });
+    if (isError) {
+      errorNotification(`An error has occured: ${(error as AxiosError).message}`);
     }
-  });
-  const handleUpvote = (e: React.MouseEvent<HTMLElement>) => {
-    e.stopPropagation();
-    if (selectedVote === 'upvote') {
-      setSelectedVote('');
-      mutate({
-        id: streamer.id,
-        type: 'downvote'
-      });
-      return;
-    }
-    mutate({
-      id: streamer.id,
-      type: 'upvote'
-    });
-    setSelectedVote('upvote');
-  };
+  }, [error, errorNotification, isError]);
 
-  const handleDownvote = (e: React.MouseEvent<HTMLElement>) => {
-    e.stopPropagation();
-    if (selectedVote === 'downvote') {
-      setSelectedVote('');
-      mutate({
-        id: streamer.id,
-        type: 'upvote'
-      });
-      return;
-    }
-    mutate({
-      id: streamer.id,
-      type: 'downvote'
-    });
-    setSelectedVote('downvote');
-  };
-
-  const [selectedVote, setSelectedVote] = useState('');
-  const [upvotesCount, setUpvotesCount] = useState(streamer.upvotesCount);
   return (
     <VotingContainer onClick={(e) => e.stopPropagation()}>
       <IconButton onClick={handleUpvote} disabled={selectedVote === 'downvote'}>
@@ -96,8 +47,7 @@ const CardVoting: React.FC<CardVotingProps> = ({ streamer }) => {
       </IconButton>
       <Typography
         variant="subtitle1"
-        color={upvotesCount < 0 ? red[400] : upvotesCount > 0 ? green[400] : grey[400]}
-      >
+        color={upvotesCount < 0 ? red[400] : upvotesCount > 0 ? green[400] : grey[400]}>
         {upvotesCount}
       </Typography>
       <IconButton onClick={handleDownvote} disabled={selectedVote === 'upvote'}>
