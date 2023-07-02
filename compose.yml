@@ -1,0 +1,24 @@
+version: "3"
+services:
+  frontend:
+    build:
+      context: './frontend'
+      dockerfile: './Dockerfile'
+    networks:
+      main:
+        aliases:
+          - 'frontend'
+    ports: 
+      - '80:80'
+  backend:
+    build:
+      context: './backend'
+      dockerfile: './Dockerfile'
+    networks:
+      main:
+        aliases:
+          - 'backend'
+    volumes:
+      - './db:/usr/src/app/db'
+networks:
+  main:
