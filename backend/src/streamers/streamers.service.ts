@@ -17,6 +17,7 @@ export class StreamersService {
   create(createStreamerDto: CreateStreamerDto) {
     this.StreamerRepo.insert(createStreamerDto);
     this.Websocket.addEvent('newStreamer', JSON.stringify(createStreamerDto));
+    return createStreamerDto;
   }
 
   findAll() {
