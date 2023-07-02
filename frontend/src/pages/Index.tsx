@@ -16,6 +16,7 @@ import StreamerHeader from "../components/StreamerHeader";
 import { socket } from "../socket";
 import apiClient from "../apiClient";
 import { AxiosError, AxiosResponse } from "axios";
+import { useNewStreamerEvent } from "../hooks/useNewStreamerEvent";
 
 const Bar = styled("div")({
   display: "flex",
@@ -31,18 +32,17 @@ const CardsContainer = styled(Box)({
   justifyContent: "center",
 });
 
-interface ModalContextValue {
-  modalOpen: boolean;
-  setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+interface FormDialogContextValue {
+  formDialogOpen: boolean;
+  setFormDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const ModalContext = createContext<ModalContextValue>({
-  modalOpen: false,
-  setModalOpen: () => "",
+export const FormDialogContext = createContext<FormDialogContextValue>({
+  formDialogOpen: false,
+  setFormDialogOpen: () => "",
 });
 
 const Index = () => {
-  const queryClient = useQueryClient();
   const { data, isLoading, isError, error } = useQuery<
     AxiosResponse<StreamerResp>,
     AxiosError
@@ -51,17 +51,8 @@ const Index = () => {
     cacheTime: 0,
   });
 
-  const [modalOpen, setModalOpen] = useState(false);
-
-  useEffect(() => {
-    const onNewStreamerEvent = () => {
-      queryClient.invalidateQueries("streamers");
-    };
-    socket.on("newStreamer", onNewStreamerEvent);
-    return () => {
-      socket.off("newStreamer", onNewStreamerEvent);
-    };
-  }, []);
+  const [formDialogOpen, setFormDialogOpen] = useState(false);
+  useNewStreamerEvent();
 
   if (isLoading) {
     return (
@@ -79,9 +70,14 @@ const Index = () => {
   return (
     <Fade in={!isLoading}>
       <div>
-        <ModalContext.Provider value={{ modalOpen, setModalOpen }}>
+        <FormDialogContext.Provider
+          value={{
+            formDialogOpen: formDialogOpen,
+            setFormDialogOpen: setFormDialogOpen,
+          }}
+        >
           <NewStreamer />
-        </ModalContext.Provider>
+        </FormDialogContext.Provider>
         <StreamerHeader
           text={`Today's spotlight`}
           streamer={data?.data[0]}
@@ -89,7 +85,7 @@ const Index = () => {
         />
         <Bar>
           <Typography variant="h3">Browse</Typography>
-          <Button onClick={() => setModalOpen(true)} startIcon={<Add />}>
+          <Button onClick={() => setFormDialogOpen(true)} startIcon={<Add />}>
             new streamer
           </Button>
         </Bar>
