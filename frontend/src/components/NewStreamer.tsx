@@ -103,7 +103,7 @@ const NewStreamer = () => {
               name="name"
               onChange={handleChange}
             />
-            <Select label="Platform" name="platform" defaultValue="twitch" onChange={handleChange}>
+            <Select name="platform" defaultValue="twitch" onChange={handleChange}>
               {platforms.map((el) => (
                 <MenuItem value={el.toLowerCase()} key={el}>
                   {el}

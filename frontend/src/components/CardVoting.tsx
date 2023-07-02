@@ -43,15 +43,21 @@ const CardVoting: React.FC<CardVotingProps> = ({ streamer }) => {
   return (
     <VotingContainer onClick={(e) => e.stopPropagation()}>
       <IconButton onClick={handleUpvote} disabled={selectedVote === 'downvote'}>
-        <KeyboardArrowUp sx={{ color: selectedVote === 'upvote' ? green[400] : null }} />
+        <KeyboardArrowUp
+          sx={{ fontSize: '1.2em', color: selectedVote === 'upvote' ? green[400] : null }}
+        />
       </IconButton>
       <Typography
-        variant="subtitle1"
+        variant="body1"
+        fontWeight={600}
+        fontSize={'2rem'}
         color={upvotesCount < 0 ? red[400] : upvotesCount > 0 ? green[400] : grey[400]}>
         {upvotesCount}
       </Typography>
       <IconButton onClick={handleDownvote} disabled={selectedVote === 'upvote'}>
-        <KeyboardArrowDown sx={{ color: selectedVote === 'downvote' ? red[400] : null }} />
+        <KeyboardArrowDown
+          sx={{ fontSize: '1.2em', color: selectedVote === 'downvote' ? red[400] : null }}
+        />
       </IconButton>
     </VotingContainer>
   );
