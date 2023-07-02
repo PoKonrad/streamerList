@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateStreamerDto } from './dto/create-streamer.dto';
 import { updateStreamerUpvoteDto } from './dto/update-steamer-upvote.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -24,12 +24,16 @@ export class StreamersService {
     return this.StreamerRepo.find();
   }
 
-  findOne(id: number) {
-    return this.StreamerRepo.findOne({
+  async findOne(id: number) {
+    const streamer = await this.StreamerRepo.findOne({
       where: {
         id: id,
       },
     });
+    if (!streamer?.name) {
+      throw new NotFoundException('Streamer not found');
+    }
+    return streamer;
   }
 
   async updateUpvotes(
