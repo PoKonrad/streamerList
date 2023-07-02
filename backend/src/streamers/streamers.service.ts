@@ -35,24 +35,25 @@ export class StreamersService {
     id: string,
     updateStreamerUpvote: updateStreamerUpvoteDto,
   ) {
-    console.log(updateStreamerUpvote.type);
-    switch (updateStreamerUpvote.type) {
-      case 'upvote':
-        console.log('miau');
-        await this.StreamerRepo.createQueryBuilder()
-          .update(Streamer)
-          .whereInIds(1)
-          .set({ upvotesCount: () => 'upvotesCount + 1' })
-          .execute();
-        break;
-      case 'downvote':
-        await this.StreamerRepo.createQueryBuilder()
-          .update(Streamer)
-          .set({ downvotesCount: () => 'downvotesCount + 1' })
-          .whereInIds(id)
-          .execute();
-    }
+    await this.StreamerRepo.createQueryBuilder()
+      .update(Streamer)
+      .whereInIds(id)
+      .set({
+        upvotesCount: () =>
+          `upvotesCount ${
+            updateStreamerUpvote.type === 'upvote' ? '+ 1' : '- 1'
+          }`,
+      })
+      .execute();
 
+    const streamer: Streamer = await this.StreamerRepo.findOneBy({
+      id: parseInt(id),
+    });
+
+    this.Websocket.addEvent(
+      `upvotes/${id}`,
+      JSON.stringify({ newCount: streamer.upvotesCount }),
+    );
     return;
   }
 }
