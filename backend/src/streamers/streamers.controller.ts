@@ -32,12 +32,11 @@ export class StreamersController {
   }
 
   @HttpCode(204)
-  @Put(':id')
+  @Put(':id/vote')
   update(
     @Param('id') id: string,
     @Body() updateStreamerUpvote: updateStreamerUpvoteDto,
   ) {
-    console.log(updateStreamerUpvote);
     return this.streamersService.updateUpvotes(id, updateStreamerUpvote);
   }
 }
