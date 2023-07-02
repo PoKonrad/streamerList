@@ -7,6 +7,7 @@ import StreamerType from './pages/Streamer.tsx';
 import { ThemeProvider, createTheme } from '@mui/material';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import NotificationSnackbar from './components/NotificationSnackbar.tsx';
+import Footer from './components/Footer.tsx';
 
 const router = createBrowserRouter([
   {
@@ -60,6 +61,7 @@ const Main = () => {
           <SnackbarContext.Provider value={{ snackbarOpen, setSnackbarOpen }}>
             <NotificationSnackbar />
             <RouterProvider router={router} />
+            <Footer />
           </SnackbarContext.Provider>
         </ThemeProvider>
       </QueryClientProvider>
