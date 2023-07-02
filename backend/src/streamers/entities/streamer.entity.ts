@@ -15,6 +15,8 @@ export class Streamer {
   @Column()
   platform: Platform;
 
-  @Column()
+  @Column({
+    default: 0,
+  })
   upvotesCount: number;
 }
