@@ -34,6 +34,7 @@ const CardMediaContainer = styled("div")({
 
 const CardContentDescription = styled(CardContent)({
   height: "10rem",
+  overflowWrap: "break-word",
 });
 
 const TitleContainer = styled("div")({
